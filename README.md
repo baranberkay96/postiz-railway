@@ -1,6 +1,6 @@
 # Deploy and Host Postiz with Railway
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/postiz-v2-ai-social-media-scheduler)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/postiz-v2-ai-social-media-scheduler?referralCode=20H68q)
 
 Postiz is an open-source social media scheduler. It plans, schedules and publishes posts to X, LinkedIn, Instagram, Facebook, Threads, YouTube, TikTok, Bluesky, Mastodon and other networks, with optional AI writing help. This community template deploys Postiz v2 on Railway with the full stack it needs, including the Temporal workflow engine.
 
