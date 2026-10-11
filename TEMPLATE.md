@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Name | Postiz v2 AI Social Media Scheduler |
-| Description | Schedule posts to X, LinkedIn, Instagram and more. Full stack with Temporal. (76 characters) |
+| Description | Schedule posts to X, LinkedIn, Instagram and more. Full Temporal stack. (76 characters) |
 | Category | Automation |
 | Tags | postiz, social-media, scheduler, marketing, temporal, ai |
 

@@ -1,13 +1,26 @@
 {
   "name": "Postiz v2 AI Social Media Scheduler",
-  "description": "Schedule posts to X, LinkedIn, Instagram and more. Full stack with Temporal.",
+  "description": "Schedule posts to X, LinkedIn, Instagram and more. Full Temporal stack.",
   "category": "Automation",
-  "tags": ["postiz", "social-media", "scheduler", "marketing", "temporal", "ai"],
-  "upstream": {"repo": "gitroomhq/postiz-app", "version": "v2.25.0", "checked": "2026-10-10"},
+  "tags": [
+    "postiz",
+    "social-media",
+    "scheduler",
+    "marketing",
+    "temporal",
+    "ai"
+  ],
+  "upstream": {
+    "repo": "gitroomhq/postiz-app",
+    "version": "v2.25.0",
+    "checked": "2026-10-10"
+  },
   "services": {
     "Postiz": {
       "icon": "https://avatars.githubusercontent.com/u/128401275?v=4",
-      "source": {"image": "ghcr.io/gitroomhq/postiz-app:v2.25.0"},
+      "source": {
+        "image": "ghcr.io/gitroomhq/postiz-app:v2.25.0"
+      },
       "startCommand": null,
       "preDeployCommand": null,
       "healthcheckPath": "/auth/can-register",
@@ -19,56 +32,233 @@
       "publicDomain": true,
       "targetPort": 5000,
       "tcpProxy": null,
-      "volume": {"mountPath": "/uploads"},
+      "volume": {
+        "mountPath": "/uploads"
+      },
       "variables": {
-        "PORT": {"defaultValue": "3000", "description": "Port of the Postiz backend inside the container (nginx on 5000 proxies /api to it); Railway also runs the healthcheck on this port.", "required": false},
-        "MAIN_URL": {"defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}", "description": "Primary public URL of this Postiz instance (email links, metadata). Update if you add a custom domain.", "required": false},
-        "FRONTEND_URL": {"defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}", "description": "Browser-facing URL; used for OAuth redirect URIs, cookies and public upload links. Update if you add a custom domain.", "required": false},
-        "NEXT_PUBLIC_BACKEND_URL": {"defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}/api", "description": "Browser-facing backend URL (served by the built-in nginx under /api).", "required": false},
-        "BACKEND_INTERNAL_URL": {"defaultValue": "http://localhost:3000", "description": "URL the frontend server uses to reach the backend inside the same container.", "required": false},
-        "JWT_SECRET": {"defaultValue": "${{secret(64)}}", "description": "Signs session tokens; changing it logs every user out.", "required": false},
-        "DATABASE_URL": {"defaultValue": "${{Postgres.DATABASE_URL}}", "description": "Postiz database (Prisma) on the private network.", "required": false},
-        "REDIS_URL": {"defaultValue": "${{Redis.REDIS_URL}}?family=0", "description": "Redis on the private network; family=0 lets ioredis resolve both IPv4 and IPv6.", "required": false},
-        "TEMPORAL_ADDRESS": {"defaultValue": "${{Temporal.RAILWAY_PRIVATE_DOMAIN}}:7233", "description": "Temporal frontend (gRPC) on the private network; required since Postiz v2.12.0.", "required": false},
-        "TEMPORAL_NAMESPACE": {"defaultValue": "${{Temporal.DEFAULT_NAMESPACE}}", "description": "Temporal namespace for Postiz workflows (created by the Temporal service).", "required": false},
-        "IS_GENERAL": {"defaultValue": "true", "description": "Self-hosted product mode, as set in the upstream docker-compose.", "required": false},
-        "RUN_CRON": {"defaultValue": "true", "description": "Runs scheduled background work (missed-post recovery) in this instance.", "required": false},
-        "DISABLE_REGISTRATION": {"defaultValue": "true", "description": "When true only the first account can sign up (no organization exists yet); set false temporarily to let invited teammates register.", "required": false},
-        "STORAGE_PROVIDER": {"defaultValue": "local", "description": "Media storage: local volume served at /uploads (Railway Buckets are private and Postiz has no generic S3 option).", "required": false},
-        "UPLOAD_DIRECTORY": {"defaultValue": "/uploads", "description": "Filesystem path for uploaded media; must match the volume mount and the image's nginx /uploads alias.", "required": false},
-        "NEXT_PUBLIC_UPLOAD_STATIC_DIRECTORY": {"defaultValue": "/uploads", "description": "Public URL prefix for uploaded media.", "required": false},
-        "API_LIMIT": {"defaultValue": "30", "description": "Hourly limit of the public API post-creation endpoint (upstream compose value).", "required": false},
-        "EMAIL_PROVIDER": {"defaultValue": "", "description": "Optional: resend or nodemailer. Leave empty to auto-activate new accounts without email; setting it turns on email activation.", "required": false},
-        "RESEND_API_KEY": {"defaultValue": "", "description": "Optional: Resend API key, used when EMAIL_PROVIDER=resend.", "required": false},
-        "EMAIL_FROM_ADDRESS": {"defaultValue": "", "description": "Optional: sender address for outgoing email.", "required": false},
-        "EMAIL_FROM_NAME": {"defaultValue": "", "description": "Optional: sender name for outgoing email.", "required": false},
-        "OPENAI_API_KEY": {"defaultValue": "", "description": "Optional: enables the AI copilot and AI image generation.", "required": false},
-        "X_API_KEY": {"defaultValue": "", "description": "Optional: X (Twitter) app API key, needed to connect X accounts.", "required": false},
-        "X_API_SECRET": {"defaultValue": "", "description": "Optional: X (Twitter) app API secret.", "required": false},
-        "LINKEDIN_CLIENT_ID": {"defaultValue": "", "description": "Optional: LinkedIn app client ID, needed to connect LinkedIn profiles and pages.", "required": false},
-        "LINKEDIN_CLIENT_SECRET": {"defaultValue": "", "description": "Optional: LinkedIn app client secret.", "required": false},
-        "FACEBOOK_APP_ID": {"defaultValue": "", "description": "Optional: Meta app ID for Facebook pages and Instagram business accounts (via Facebook login).", "required": false},
-        "FACEBOOK_APP_SECRET": {"defaultValue": "", "description": "Optional: Meta app secret for Facebook and Instagram (via Facebook login).", "required": false},
-        "INSTAGRAM_APP_ID": {"defaultValue": "", "description": "Optional: Instagram app ID for the standalone Instagram login provider.", "required": false},
-        "INSTAGRAM_APP_SECRET": {"defaultValue": "", "description": "Optional: Instagram app secret for the standalone Instagram login provider.", "required": false},
-        "THREADS_APP_ID": {"defaultValue": "", "description": "Optional: Threads app ID.", "required": false},
-        "THREADS_APP_SECRET": {"defaultValue": "", "description": "Optional: Threads app secret.", "required": false},
-        "YOUTUBE_CLIENT_ID": {"defaultValue": "", "description": "Optional: Google OAuth client ID for YouTube.", "required": false},
-        "YOUTUBE_CLIENT_SECRET": {"defaultValue": "", "description": "Optional: Google OAuth client secret for YouTube.", "required": false},
-        "TIKTOK_CLIENT_ID": {"defaultValue": "", "description": "Optional: TikTok app client key.", "required": false},
-        "TIKTOK_CLIENT_SECRET": {"defaultValue": "", "description": "Optional: TikTok app client secret.", "required": false},
-        "REDDIT_CLIENT_ID": {"defaultValue": "", "description": "Optional: Reddit app client ID.", "required": false},
-        "REDDIT_CLIENT_SECRET": {"defaultValue": "", "description": "Optional: Reddit app client secret.", "required": false},
-        "PINTEREST_CLIENT_ID": {"defaultValue": "", "description": "Optional: Pinterest app ID.", "required": false},
-        "PINTEREST_CLIENT_SECRET": {"defaultValue": "", "description": "Optional: Pinterest app secret.", "required": false},
-        "MASTODON_URL": {"defaultValue": "https://mastodon.social", "description": "Optional: Mastodon instance used for the Mastodon provider.", "required": false},
-        "MASTODON_CLIENT_ID": {"defaultValue": "", "description": "Optional: Mastodon application client key.", "required": false},
-        "MASTODON_CLIENT_SECRET": {"defaultValue": "", "description": "Optional: Mastodon application client secret.", "required": false}
+        "PORT": {
+          "defaultValue": "3000",
+          "description": "Port of the Postiz backend inside the container (nginx on 5000 proxies /api to it); Railway also runs the healthcheck on this port.",
+          "required": false
+        },
+        "MAIN_URL": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Primary public URL of this Postiz instance (email links, metadata). Update if you add a custom domain.",
+          "required": false
+        },
+        "FRONTEND_URL": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Browser-facing URL; used for OAuth redirect URIs, cookies and public upload links. Update if you add a custom domain.",
+          "required": false
+        },
+        "NEXT_PUBLIC_BACKEND_URL": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}/api",
+          "description": "Browser-facing backend URL (served by the built-in nginx under /api).",
+          "required": false
+        },
+        "BACKEND_INTERNAL_URL": {
+          "defaultValue": "http://localhost:3000",
+          "description": "URL the frontend server uses to reach the backend inside the same container.",
+          "required": false
+        },
+        "JWT_SECRET": {
+          "defaultValue": "${{secret(64)}}",
+          "description": "Signs session tokens; changing it logs every user out.",
+          "required": false
+        },
+        "DATABASE_URL": {
+          "defaultValue": "${{Postgres.DATABASE_URL}}",
+          "description": "Postiz database (Prisma) on the private network.",
+          "required": false
+        },
+        "REDIS_URL": {
+          "defaultValue": "${{Redis.REDIS_URL}}?family=0",
+          "description": "Redis on the private network; family=0 lets ioredis resolve both IPv4 and IPv6.",
+          "required": false
+        },
+        "TEMPORAL_ADDRESS": {
+          "defaultValue": "${{Temporal.RAILWAY_PRIVATE_DOMAIN}}:7233",
+          "description": "Temporal frontend (gRPC) on the private network; required since Postiz v2.12.0.",
+          "required": false
+        },
+        "TEMPORAL_NAMESPACE": {
+          "defaultValue": "${{Temporal.DEFAULT_NAMESPACE}}",
+          "description": "Temporal namespace for Postiz workflows (created by the Temporal service).",
+          "required": false
+        },
+        "IS_GENERAL": {
+          "defaultValue": "true",
+          "description": "Self-hosted product mode, as set in the upstream docker-compose.",
+          "required": false
+        },
+        "RUN_CRON": {
+          "defaultValue": "true",
+          "description": "Runs scheduled background work (missed-post recovery) in this instance.",
+          "required": false
+        },
+        "DISABLE_REGISTRATION": {
+          "defaultValue": "true",
+          "description": "When true only the first account can sign up (no organization exists yet); set false temporarily to let invited teammates register.",
+          "required": false
+        },
+        "STORAGE_PROVIDER": {
+          "defaultValue": "local",
+          "description": "Media storage: local volume served at /uploads (Railway Buckets are private and Postiz has no generic S3 option).",
+          "required": false
+        },
+        "UPLOAD_DIRECTORY": {
+          "defaultValue": "/uploads",
+          "description": "Filesystem path for uploaded media; must match the volume mount and the image's nginx /uploads alias.",
+          "required": false
+        },
+        "NEXT_PUBLIC_UPLOAD_STATIC_DIRECTORY": {
+          "defaultValue": "/uploads",
+          "description": "Public URL prefix for uploaded media.",
+          "required": false
+        },
+        "API_LIMIT": {
+          "defaultValue": "30",
+          "description": "Hourly limit of the public API post-creation endpoint (upstream compose value).",
+          "required": false
+        },
+        "EMAIL_PROVIDER": {
+          "defaultValue": "",
+          "description": "Optional: resend or nodemailer. Leave empty to auto-activate new accounts without email; setting it turns on email activation.",
+          "required": false
+        },
+        "RESEND_API_KEY": {
+          "defaultValue": "",
+          "description": "Optional: Resend API key, used when EMAIL_PROVIDER=resend.",
+          "required": false
+        },
+        "EMAIL_FROM_ADDRESS": {
+          "defaultValue": "",
+          "description": "Optional: sender address for outgoing email.",
+          "required": false
+        },
+        "EMAIL_FROM_NAME": {
+          "defaultValue": "",
+          "description": "Optional: sender name for outgoing email.",
+          "required": false
+        },
+        "OPENAI_API_KEY": {
+          "defaultValue": "",
+          "description": "Optional: enables the AI copilot and AI image generation.",
+          "required": false
+        },
+        "X_API_KEY": {
+          "defaultValue": "",
+          "description": "Optional: X (Twitter) app API key, needed to connect X accounts.",
+          "required": false
+        },
+        "X_API_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: X (Twitter) app API secret.",
+          "required": false
+        },
+        "LINKEDIN_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "Optional: LinkedIn app client ID, needed to connect LinkedIn profiles and pages.",
+          "required": false
+        },
+        "LINKEDIN_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: LinkedIn app client secret.",
+          "required": false
+        },
+        "FACEBOOK_APP_ID": {
+          "defaultValue": "",
+          "description": "Optional: Meta app ID for Facebook pages and Instagram business accounts (via Facebook login).",
+          "required": false
+        },
+        "FACEBOOK_APP_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Meta app secret for Facebook and Instagram (via Facebook login).",
+          "required": false
+        },
+        "INSTAGRAM_APP_ID": {
+          "defaultValue": "",
+          "description": "Optional: Instagram app ID for the standalone Instagram login provider.",
+          "required": false
+        },
+        "INSTAGRAM_APP_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Instagram app secret for the standalone Instagram login provider.",
+          "required": false
+        },
+        "THREADS_APP_ID": {
+          "defaultValue": "",
+          "description": "Optional: Threads app ID.",
+          "required": false
+        },
+        "THREADS_APP_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Threads app secret.",
+          "required": false
+        },
+        "YOUTUBE_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "Optional: Google OAuth client ID for YouTube.",
+          "required": false
+        },
+        "YOUTUBE_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Google OAuth client secret for YouTube.",
+          "required": false
+        },
+        "TIKTOK_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "Optional: TikTok app client key.",
+          "required": false
+        },
+        "TIKTOK_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: TikTok app client secret.",
+          "required": false
+        },
+        "REDDIT_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "Optional: Reddit app client ID.",
+          "required": false
+        },
+        "REDDIT_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Reddit app client secret.",
+          "required": false
+        },
+        "PINTEREST_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "Optional: Pinterest app ID.",
+          "required": false
+        },
+        "PINTEREST_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Pinterest app secret.",
+          "required": false
+        },
+        "MASTODON_URL": {
+          "defaultValue": "https://mastodon.social",
+          "description": "Optional: Mastodon instance used for the Mastodon provider.",
+          "required": false
+        },
+        "MASTODON_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "Optional: Mastodon application client key.",
+          "required": false
+        },
+        "MASTODON_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "Optional: Mastodon application client secret.",
+          "required": false
+        }
       }
     },
     "Temporal": {
       "icon": "https://avatars.githubusercontent.com/u/56493103?v=4",
-      "source": {"repo": "baranberkay96/postiz-railway", "rootDirectory": "/services/temporal"},
+      "source": {
+        "repo": "baranberkay96/postiz-railway",
+        "rootDirectory": "/services/temporal"
+      },
       "startCommand": null,
       "preDeployCommand": null,
       "healthcheckPath": "/api/v1/system-info",
@@ -82,35 +272,134 @@
       "tcpProxy": null,
       "volume": null,
       "variables": {
-        "PORT": {"defaultValue": "7243", "description": "Temporal frontend HTTP API port; tells Railway where to run the healthcheck (gRPC stays on 7233).", "required": false},
-        "DB": {"defaultValue": "postgres12", "description": "Temporal SQL plugin for PostgreSQL 12 and newer.", "required": false},
-        "POSTGRES_SEEDS": {"defaultValue": "${{Postgres.RAILWAY_PRIVATE_DOMAIN}}", "description": "Postgres host on the private network (shared with Postiz, separate database).", "required": false},
-        "DB_PORT": {"defaultValue": "${{Postgres.PGPORT}}", "description": "Postgres port.", "required": false},
-        "POSTGRES_USER": {"defaultValue": "${{Postgres.PGUSER}}", "description": "Postgres user Temporal connects as.", "required": false},
-        "POSTGRES_PWD": {"defaultValue": "${{Postgres.PGPASSWORD}}", "description": "Postgres password.", "required": false},
-        "DBNAME": {"defaultValue": "temporal", "description": "Database for Temporal persistence; created and migrated automatically on every boot.", "required": false},
-        "SQL_MAX_CONNS": {"defaultValue": "20", "description": "Maximum Postgres connections opened by Temporal.", "required": false},
-        "ENABLE_ES": {"defaultValue": "true", "description": "Use Elasticsearch as the visibility store, as in the upstream Postiz compose file.", "required": false},
-        "ES_SEEDS": {"defaultValue": "${{Elasticsearch.RAILWAY_PRIVATE_DOMAIN}}", "description": "Elasticsearch host on the private network.", "required": false},
-        "ES_PORT": {"defaultValue": "9200", "description": "Elasticsearch HTTP port.", "required": false},
-        "ES_SCHEME": {"defaultValue": "http", "description": "Elasticsearch scheme (private network, no TLS).", "required": false},
-        "ES_VERSION": {"defaultValue": "v8", "description": "Elasticsearch major version expected by Temporal.", "required": false},
-        "ES_USER": {"defaultValue": "elastic", "description": "Elasticsearch user.", "required": false},
-        "ES_PWD": {"defaultValue": "${{Elasticsearch.ELASTIC_PASSWORD}}", "description": "Elasticsearch password.", "required": false},
-        "ES_VIS_INDEX": {"defaultValue": "temporal_visibility_v1", "description": "Visibility index name; created and upgraded automatically on every boot.", "required": false},
-        "NUM_HISTORY_SHARDS": {"defaultValue": "4", "description": "History shard count; fixed at first boot and cannot be changed later without a new database.", "required": false},
-        "BIND_ON_IP": {"defaultValue": "::", "description": "Listen on all IPv4 and IPv6 interfaces for Railway private networking.", "required": false},
-        "TEMPORAL_BROADCAST_ADDRESS": {"defaultValue": "127.0.0.1", "description": "Address this single-node cluster advertises to its own internal services.", "required": false},
-        "TEMPORAL_ALLOW_NO_AUTH": {"defaultValue": "true", "description": "No Temporal authorizer: the server has no public domain and is reachable only on the private network.", "required": false},
-        "DEFAULT_NAMESPACE": {"defaultValue": "default", "description": "Namespace created on boot and used by Postiz.", "required": false},
-        "DEFAULT_NAMESPACE_RETENTION": {"defaultValue": "72h", "description": "How long closed workflow histories are kept (applies when the namespace is first created).", "required": false},
-        "LOG_LEVEL": {"defaultValue": "info", "description": "Temporal server log level (debug, info, warn, error).", "required": false},
-        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {"defaultValue": "20", "description": "Time allowed for a clean Temporal shutdown on redeploy.", "required": false}
+        "PORT": {
+          "defaultValue": "7243",
+          "description": "Temporal frontend HTTP API port; tells Railway where to run the healthcheck (gRPC stays on 7233).",
+          "required": false
+        },
+        "DB": {
+          "defaultValue": "postgres12",
+          "description": "Temporal SQL plugin for PostgreSQL 12 and newer.",
+          "required": false
+        },
+        "POSTGRES_SEEDS": {
+          "defaultValue": "${{Postgres.RAILWAY_PRIVATE_DOMAIN}}",
+          "description": "Postgres host on the private network (shared with Postiz, separate database).",
+          "required": false
+        },
+        "DB_PORT": {
+          "defaultValue": "${{Postgres.PGPORT}}",
+          "description": "Postgres port.",
+          "required": false
+        },
+        "POSTGRES_USER": {
+          "defaultValue": "${{Postgres.PGUSER}}",
+          "description": "Postgres user Temporal connects as.",
+          "required": false
+        },
+        "POSTGRES_PWD": {
+          "defaultValue": "${{Postgres.PGPASSWORD}}",
+          "description": "Postgres password.",
+          "required": false
+        },
+        "DBNAME": {
+          "defaultValue": "temporal",
+          "description": "Database for Temporal persistence; created and migrated automatically on every boot.",
+          "required": false
+        },
+        "SQL_MAX_CONNS": {
+          "defaultValue": "20",
+          "description": "Maximum Postgres connections opened by Temporal.",
+          "required": false
+        },
+        "ENABLE_ES": {
+          "defaultValue": "true",
+          "description": "Use Elasticsearch as the visibility store, as in the upstream Postiz compose file.",
+          "required": false
+        },
+        "ES_SEEDS": {
+          "defaultValue": "${{Elasticsearch.RAILWAY_PRIVATE_DOMAIN}}",
+          "description": "Elasticsearch host on the private network.",
+          "required": false
+        },
+        "ES_PORT": {
+          "defaultValue": "9200",
+          "description": "Elasticsearch HTTP port.",
+          "required": false
+        },
+        "ES_SCHEME": {
+          "defaultValue": "http",
+          "description": "Elasticsearch scheme (private network, no TLS).",
+          "required": false
+        },
+        "ES_VERSION": {
+          "defaultValue": "v8",
+          "description": "Elasticsearch major version expected by Temporal.",
+          "required": false
+        },
+        "ES_USER": {
+          "defaultValue": "elastic",
+          "description": "Elasticsearch user.",
+          "required": false
+        },
+        "ES_PWD": {
+          "defaultValue": "${{Elasticsearch.ELASTIC_PASSWORD}}",
+          "description": "Elasticsearch password.",
+          "required": false
+        },
+        "ES_VIS_INDEX": {
+          "defaultValue": "temporal_visibility_v1",
+          "description": "Visibility index name; created and upgraded automatically on every boot.",
+          "required": false
+        },
+        "NUM_HISTORY_SHARDS": {
+          "defaultValue": "4",
+          "description": "History shard count; fixed at first boot and cannot be changed later without a new database.",
+          "required": false
+        },
+        "BIND_ON_IP": {
+          "defaultValue": "::",
+          "description": "Listen on all IPv4 and IPv6 interfaces for Railway private networking.",
+          "required": false
+        },
+        "TEMPORAL_BROADCAST_ADDRESS": {
+          "defaultValue": "127.0.0.1",
+          "description": "Address this single-node cluster advertises to its own internal services.",
+          "required": false
+        },
+        "TEMPORAL_ALLOW_NO_AUTH": {
+          "defaultValue": "true",
+          "description": "No Temporal authorizer: the server has no public domain and is reachable only on the private network.",
+          "required": false
+        },
+        "DEFAULT_NAMESPACE": {
+          "defaultValue": "default",
+          "description": "Namespace created on boot and used by Postiz.",
+          "required": false
+        },
+        "DEFAULT_NAMESPACE_RETENTION": {
+          "defaultValue": "72h",
+          "description": "How long closed workflow histories are kept (applies when the namespace is first created).",
+          "required": false
+        },
+        "LOG_LEVEL": {
+          "defaultValue": "info",
+          "description": "Temporal server log level (debug, info, warn, error).",
+          "required": false
+        },
+        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+          "defaultValue": "20",
+          "description": "Time allowed for a clean Temporal shutdown on redeploy.",
+          "required": false
+        }
       }
     },
     "Elasticsearch": {
       "icon": "https://avatars.githubusercontent.com/u/6764390?v=4",
-      "source": {"repo": "baranberkay96/postiz-railway", "rootDirectory": "/services/elasticsearch"},
+      "source": {
+        "repo": "baranberkay96/postiz-railway",
+        "rootDirectory": "/services/elasticsearch"
+      },
       "startCommand": null,
       "preDeployCommand": null,
       "healthcheckPath": "/_cluster/health?wait_for_status=yellow&timeout=5s",
@@ -122,17 +411,38 @@
       "publicDomain": false,
       "targetPort": null,
       "tcpProxy": null,
-      "volume": {"mountPath": "/usr/share/elasticsearch/data"},
+      "volume": {
+        "mountPath": "/usr/share/elasticsearch/data"
+      },
       "variables": {
-        "PORT": {"defaultValue": "9200", "description": "Elasticsearch HTTP port; tells Railway where to run the healthcheck.", "required": false},
-        "ELASTIC_PASSWORD": {"defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}", "description": "Password of the built-in elastic user (used by Temporal); set once, before the first deploy.", "required": false},
-        "ES_JAVA_OPTS": {"defaultValue": "-Xms512m -Xmx512m", "description": "JVM heap; keep it explicit, otherwise Elasticsearch sizes the heap from the container limit.", "required": false},
-        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {"defaultValue": "30", "description": "Time allowed for a clean Elasticsearch shutdown on redeploy.", "required": false}
+        "PORT": {
+          "defaultValue": "9200",
+          "description": "Elasticsearch HTTP port; tells Railway where to run the healthcheck.",
+          "required": false
+        },
+        "ELASTIC_PASSWORD": {
+          "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Password of the built-in elastic user (used by Temporal); set once, before the first deploy.",
+          "required": false
+        },
+        "ES_JAVA_OPTS": {
+          "defaultValue": "-Xms512m -Xmx512m",
+          "description": "JVM heap; keep it explicit, otherwise Elasticsearch sizes the heap from the container limit.",
+          "required": false
+        },
+        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+          "defaultValue": "30",
+          "description": "Time allowed for a clean Elasticsearch shutdown on redeploy.",
+          "required": false
+        }
       }
     },
     "Temporal UI": {
       "icon": "https://avatars.githubusercontent.com/u/56493103?v=4",
-      "source": {"repo": "baranberkay96/postiz-railway", "rootDirectory": "/services/temporal-ui"},
+      "source": {
+        "repo": "baranberkay96/postiz-railway",
+        "rootDirectory": "/services/temporal-ui"
+      },
       "startCommand": null,
       "preDeployCommand": null,
       "healthcheckPath": "/healthz",
@@ -146,18 +456,48 @@
       "tcpProxy": null,
       "volume": null,
       "variables": {
-        "PORT": {"defaultValue": "8080", "description": "Public port served by Caddy with basic auth in front of the UI.", "required": false},
-        "TEMPORAL_UI_USERNAME": {"defaultValue": "admin", "description": "Basic-auth username for the Temporal UI.", "required": false},
-        "TEMPORAL_UI_PASSWORD": {"defaultValue": "${{secret(24, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}", "description": "Basic-auth password for the Temporal UI (generated; see this service's variables).", "required": false},
-        "TEMPORAL_ADDRESS": {"defaultValue": "${{Temporal.RAILWAY_PRIVATE_DOMAIN}}:7233", "description": "Temporal frontend (gRPC) on the private network.", "required": false},
-        "TEMPORAL_DEFAULT_NAMESPACE": {"defaultValue": "${{Temporal.DEFAULT_NAMESPACE}}", "description": "Namespace opened by default (the one Postiz uses).", "required": false},
-        "TEMPORAL_CORS_ORIGINS": {"defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}", "description": "Origin allowed by the UI server; update if you add a custom domain.", "required": false},
-        "TEMPORAL_DISABLE_WRITE_ACTIONS": {"defaultValue": "false", "description": "Set true to make the UI read-only (no cancel, terminate, reset or signal).", "required": false}
+        "PORT": {
+          "defaultValue": "8080",
+          "description": "Public port served by Caddy with basic auth in front of the UI.",
+          "required": false
+        },
+        "TEMPORAL_UI_USERNAME": {
+          "defaultValue": "admin",
+          "description": "Basic-auth username for the Temporal UI.",
+          "required": false
+        },
+        "TEMPORAL_UI_PASSWORD": {
+          "defaultValue": "${{secret(24, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Basic-auth password for the Temporal UI (generated; see this service's variables).",
+          "required": false
+        },
+        "TEMPORAL_ADDRESS": {
+          "defaultValue": "${{Temporal.RAILWAY_PRIVATE_DOMAIN}}:7233",
+          "description": "Temporal frontend (gRPC) on the private network.",
+          "required": false
+        },
+        "TEMPORAL_DEFAULT_NAMESPACE": {
+          "defaultValue": "${{Temporal.DEFAULT_NAMESPACE}}",
+          "description": "Namespace opened by default (the one Postiz uses).",
+          "required": false
+        },
+        "TEMPORAL_CORS_ORIGINS": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Origin allowed by the UI server; update if you add a custom domain.",
+          "required": false
+        },
+        "TEMPORAL_DISABLE_WRITE_ACTIONS": {
+          "defaultValue": "false",
+          "description": "Set true to make the UI read-only (no cancel, terminate, reset or signal).",
+          "required": false
+        }
       }
     },
     "Postgres": {
       "icon": "https://devicons.railway.app/i/postgresql.svg",
-      "source": {"image": "ghcr.io/railwayapp-templates/postgres-ssl:18"},
+      "source": {
+        "image": "ghcr.io/railwayapp-templates/postgres-ssl:18"
+      },
       "startCommand": null,
       "preDeployCommand": null,
       "healthcheckPath": null,
@@ -169,25 +509,77 @@
       "publicDomain": false,
       "targetPort": null,
       "tcpProxy": null,
-      "volume": {"mountPath": "/var/lib/postgresql/data"},
+      "volume": {
+        "mountPath": "/var/lib/postgresql/data"
+      },
       "variables": {
-        "PGDATA": {"defaultValue": "/var/lib/postgresql/data/pgdata", "description": "Location where the database will be initialized", "required": false},
-        "PGHOST": {"defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}", "description": "Railway Private Domain Name.", "required": false},
-        "PGPORT": {"defaultValue": "5432", "description": "Port to connect to Postgres.", "required": false},
-        "PGUSER": {"defaultValue": "${{ POSTGRES_USER }}", "description": "Required variable for Data panel", "required": false},
-        "PGDATABASE": {"defaultValue": "${{POSTGRES_DB}}", "description": "Required variable for the data panel.", "required": false},
-        "PGPASSWORD": {"defaultValue": "${{POSTGRES_PASSWORD}}", "description": "Required variable for Data panel", "required": false},
-        "POSTGRES_DB": {"defaultValue": "railway", "description": "Default database created when image is started.", "required": false},
-        "DATABASE_URL": {"defaultValue": "postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:5432/${{PGDATABASE}}", "description": "URL to connect to Postgres database.", "required": false},
-        "POSTGRES_USER": {"defaultValue": "postgres", "description": "User to connect to Postgres DB", "required": false},
-        "SSL_CERT_DAYS": {"defaultValue": "820", "description": "SSL certificate expiry in days.", "required": false},
-        "POSTGRES_PASSWORD": {"defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}", "description": "Password to connect to DB", "required": false},
-        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {"defaultValue": "60", "description": "Allow Postgres to cleanly shut down", "required": false}
+        "PGDATA": {
+          "defaultValue": "/var/lib/postgresql/data/pgdata",
+          "description": "Location where the database will be initialized",
+          "required": false
+        },
+        "PGHOST": {
+          "defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}",
+          "description": "Railway Private Domain Name.",
+          "required": false
+        },
+        "PGPORT": {
+          "defaultValue": "5432",
+          "description": "Port to connect to Postgres.",
+          "required": false
+        },
+        "PGUSER": {
+          "defaultValue": "${{ POSTGRES_USER }}",
+          "description": "Required variable for Data panel",
+          "required": false
+        },
+        "PGDATABASE": {
+          "defaultValue": "${{POSTGRES_DB}}",
+          "description": "Required variable for the data panel.",
+          "required": false
+        },
+        "PGPASSWORD": {
+          "defaultValue": "${{POSTGRES_PASSWORD}}",
+          "description": "Required variable for Data panel",
+          "required": false
+        },
+        "POSTGRES_DB": {
+          "defaultValue": "railway",
+          "description": "Default database created when image is started.",
+          "required": false
+        },
+        "DATABASE_URL": {
+          "defaultValue": "postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:5432/${{PGDATABASE}}",
+          "description": "URL to connect to Postgres database.",
+          "required": false
+        },
+        "POSTGRES_USER": {
+          "defaultValue": "postgres",
+          "description": "User to connect to Postgres DB",
+          "required": false
+        },
+        "SSL_CERT_DAYS": {
+          "defaultValue": "820",
+          "description": "SSL certificate expiry in days.",
+          "required": false
+        },
+        "POSTGRES_PASSWORD": {
+          "defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}",
+          "description": "Password to connect to DB",
+          "required": false
+        },
+        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+          "defaultValue": "60",
+          "description": "Allow Postgres to cleanly shut down",
+          "required": false
+        }
       }
     },
     "Redis": {
       "icon": "https://cdn.sanity.io/images/sy1jschh/production/0ce0bfdcfbdbf69662b1116671f97c2dd788b655-157x157.svg",
-      "source": {"image": "redis:8.2"},
+      "source": {
+        "image": "redis:8.2"
+      },
       "startCommand": "/bin/sh -c \"rm -rf $RAILWAY_VOLUME_MOUNT_PATH/lost+found/ && exec docker-entrypoint.sh redis-server --requirepass $REDIS_PASSWORD --save 60 1 --dir $RAILWAY_VOLUME_MOUNT_PATH\"",
       "preDeployCommand": null,
       "healthcheckPath": null,
@@ -199,14 +591,40 @@
       "publicDomain": false,
       "targetPort": null,
       "tcpProxy": null,
-      "volume": {"mountPath": "/data"},
+      "volume": {
+        "mountPath": "/data"
+      },
       "variables": {
-        "REDISHOST": {"defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}", "description": "Private network hostname of the Redis service, only resolvable from services in the same environment", "required": false},
-        "REDISPORT": {"defaultValue": "6379", "description": "Port that Redis listens on", "required": false},
-        "REDISUSER": {"defaultValue": "default", "description": "Username for authenticating with Redis", "required": false},
-        "REDIS_URL": {"defaultValue": "redis://${{ REDISUSER }}:${{ REDIS_PASSWORD }}@${{ REDISHOST }}:${{ REDISPORT }}", "description": "Connection string for connecting to Redis using the private network", "required": false},
-        "REDISPASSWORD": {"defaultValue": "${{REDIS_PASSWORD}}", "description": "Alias of REDIS_PASSWORD for clients that expect the unseparated name", "required": false},
-        "REDIS_PASSWORD": {"defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}", "description": "Randomly generated password for authenticating with Redis", "required": false}
+        "REDISHOST": {
+          "defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}",
+          "description": "Private network hostname of the Redis service, only resolvable from services in the same environment",
+          "required": false
+        },
+        "REDISPORT": {
+          "defaultValue": "6379",
+          "description": "Port that Redis listens on",
+          "required": false
+        },
+        "REDISUSER": {
+          "defaultValue": "default",
+          "description": "Username for authenticating with Redis",
+          "required": false
+        },
+        "REDIS_URL": {
+          "defaultValue": "redis://${{ REDISUSER }}:${{ REDIS_PASSWORD }}@${{ REDISHOST }}:${{ REDISPORT }}",
+          "description": "Connection string for connecting to Redis using the private network",
+          "required": false
+        },
+        "REDISPASSWORD": {
+          "defaultValue": "${{REDIS_PASSWORD}}",
+          "description": "Alias of REDIS_PASSWORD for clients that expect the unseparated name",
+          "required": false
+        },
+        "REDIS_PASSWORD": {
+          "defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}",
+          "description": "Randomly generated password for authenticating with Redis",
+          "required": false
+        }
       }
     }
   },
