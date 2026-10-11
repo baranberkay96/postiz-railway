@@ -50,7 +50,7 @@ Postiz v2 is more than a web app with a database. Since v2.12.0 every scheduled 
 2. Open the Postiz domain and register right away. The first account becomes the owner. Registration then closes automatically (`DISABLE_REGISTRATION=true`).
 3. To invite teammates who need new accounts, set `DISABLE_REGISTRATION=false` on the Postiz service, let them sign up, then set it back to `true`.
 4. No email service is required. Accounts are activated automatically while `EMAIL_PROVIDER` is empty. Set `EMAIL_PROVIDER=resend` with `RESEND_API_KEY`, or `nodemailer` with SMTP settings, if you want activation and notification emails.
-5. To connect a network, create a developer app with that network and use the redirect URI `https://<your-postiz-domain>/integrations/social/<provider>`. Then add its keys (for example `X_API_KEY`/`X_API_SECRET` or `LINKEDIN_CLIENT_ID`/`LINKEDIN_CLIENT_SECRET`) to the Postiz service. Bluesky only needs a handle and an app password.
+5. To connect a network, create a developer app with that network and use the redirect URI `https://{your-postiz-domain}/integrations/social/{provider}`. Then add its keys (for example `X_API_KEY`/`X_API_SECRET` or `LINKEDIN_CLIENT_ID`/`LINKEDIN_CLIENT_SECRET`) to the Postiz service. Bluesky only needs a handle and an app password.
 6. Temporal UI credentials are the `TEMPORAL_UI_USERNAME` and `TEMPORAL_UI_PASSWORD` variables on the Temporal UI service.
 7. If you add a custom domain to Postiz, update `MAIN_URL`, `FRONTEND_URL` and `NEXT_PUBLIC_BACKEND_URL`, plus the redirect URIs in your social apps.
 
