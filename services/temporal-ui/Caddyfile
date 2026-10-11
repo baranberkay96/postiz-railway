@@ -1,0 +1,20 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+# Railway terminates TLS at its edge and forwards plain HTTP to $PORT.
+:{$PORT:8080} {
+	# Unauthenticated liveness endpoint used by the Railway healthcheck.
+	handle /healthz {
+		reverse_proxy 127.0.0.1:{$TEMPORAL_UI_PORT}
+	}
+
+	handle {
+		basic_auth {
+			{$TEMPORAL_UI_USERNAME} {$TEMPORAL_UI_PASSWORD_HASH}
+		}
+		reverse_proxy 127.0.0.1:{$TEMPORAL_UI_PORT}
+	}
+}

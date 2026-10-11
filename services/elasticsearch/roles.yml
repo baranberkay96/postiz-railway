@@ -1,0 +1,6 @@
+# File-based roles (https://www.elastic.co/guide/en/elasticsearch/reference/8.19/defining-roles.html)
+#
+# Assigned to anonymous requests (see elasticsearch.yml): read-only cluster
+# monitoring APIs such as /_cluster/health. No index or document access.
+cluster_monitor_only:
+  cluster: ["monitor"]

@@ -1,0 +1,8 @@
+# Dynamic config for the single-node Temporal server used by Postiz.
+# Key reference: https://github.com/temporalio/temporal/blob/v1.32.1/common/dynamicconfig/constants.go
+#
+# Workflow/run IDs are stored in VARCHAR(255) columns of the SQL persistence
+# schema; cap IDs at the same length so oversized IDs are rejected up front.
+limit.maxIDLength:
+  - value: 255
+    constraints: {}

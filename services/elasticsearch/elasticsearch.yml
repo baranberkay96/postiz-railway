@@ -1,0 +1,41 @@
+# Elasticsearch settings for the Temporal visibility store (Postiz Railway template).
+# Single node, reachable only over the Railway private network.
+# Reference: https://www.elastic.co/guide/en/elasticsearch/reference/8.19/settings.html
+
+cluster.name: temporal-visibility
+node.name: elasticsearch
+discovery.type: single-node
+path.data: /usr/share/elasticsearch/data
+
+# HTTP on all interfaces (the JVM binds the wildcard as a dual-stack socket, so both
+# IPv4 and IPv6 private-network clients can connect). Transport stays on loopback.
+http.host: 0.0.0.0
+http.port: 9200
+transport.host: _local_
+
+# vm.max_map_count cannot be raised on Railway; use NIO instead of mmap for index files.
+node.store.allow_mmap: false
+
+# Security: password authentication for the built-in "elastic" user (ELASTIC_PASSWORD).
+# No TLS: traffic stays on the Railway private network and there is no public domain.
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: false
+xpack.security.http.ssl.enabled: false
+xpack.security.transport.ssl.enabled: false
+
+# Requests without credentials run as a read-only monitoring user so the Railway
+# healthcheck can call /_cluster/health. Document data still requires credentials.
+xpack.security.authc.anonymous.username: railway_healthcheck
+xpack.security.authc.anonymous.roles: cluster_monitor_only
+xpack.security.authc.anonymous.authz_exception: true
+
+# Features Temporal does not use (saves memory and outbound traffic).
+xpack.ml.enabled: false
+xpack.watcher.enabled: false
+ingest.geoip.downloader.enabled: false
+
+# Absolute free-space watermarks suit small Railway volumes better than the
+# percentage defaults (which would block writes with gigabytes still free).
+cluster.routing.allocation.disk.watermark.low: 1gb
+cluster.routing.allocation.disk.watermark.high: 512mb
+cluster.routing.allocation.disk.watermark.flood_stage: 256mb
